@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SocketRocket",
+        "repositoryURL": "git@git.csat.ru:a.pozakshin/socketrocket.git",
+        "state": {
+          "branch": "dev",
+          "revision": "ab566bc4dccaab2b3fb626c171434e8565ad7cfc",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
