@@ -3,10 +3,10 @@
     "pins": [
       {
         "package": "SocketRocket",
-        "repositoryURL": "git@git.csat.ru:a.pozakshin/socketrocket.git",
+        "repositoryURL": "https://git.csat.ru/a.pozakshin/socketrocket.git",
         "state": {
-          "branch": "dev",
-          "revision": "ab566bc4dccaab2b3fb626c171434e8565ad7cfc",
+          "branch": "master",
+          "revision": "3ef0d08e6387bf6199f0f64eb9064d69999c4e5b",
           "version": null
         }
       }
