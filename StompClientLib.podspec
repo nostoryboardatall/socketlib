@@ -39,5 +39,5 @@ Simple STOMP Client library, Swift 3, 4, 4.2, 5 compatible. STOMP Protocol let t
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'SocketRocket'
+   s.dependency 'SocketRocket'
 end

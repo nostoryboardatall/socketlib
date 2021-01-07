@@ -1,7 +1,7 @@
 {
   "name": "StompClientLib",
-  "version": "1.3.8",
-  "summary": "Simple STOMP Client library. Swift 3, 4, 4.2, 5 compatible",
+  "version": "1.4.0",
+  "summary": "Simple STOMP Client library. Swift 3, 4, 4.2, 5 compatible. Objective-C Run-time compatibility",
   "swift_versions": [
     "4.0",
     "4.2",
@@ -18,7 +18,7 @@
   },
   "source": {
     "git": "https://github.com/wrathchaos/StompClientLib.git",
-    "tag": "1.3.8"
+    "tag": "1.4.0"
   },
   "social_media_url": "https://twitter.com/freakycodercom",
   "platforms": {

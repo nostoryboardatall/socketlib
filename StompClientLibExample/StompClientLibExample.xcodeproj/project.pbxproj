@@ -42,6 +42,7 @@
 		04998091BF2B72FE0D232EBD /* Pods_StompClientLibExample_StompClientLibExampleUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StompClientLibExample_StompClientLibExampleUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AA7DBE617D00B75746D8D98 /* Pods-StompClientLibExample-StompClientLibExampleUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StompClientLibExample-StompClientLibExampleUITests.release.xcconfig"; path = "Target Support Files/Pods-StompClientLibExample-StompClientLibExampleUITests/Pods-StompClientLibExample-StompClientLibExampleUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2420D6AC0CC10C10A0D9CB8C /* Pods-StompClientLibExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StompClientLibExampleTests.debug.xcconfig"; path = "Target Support Files/Pods-StompClientLibExampleTests/Pods-StompClientLibExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4529619225A5BBB700BCF05A /* SocketRocket.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SocketRocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB0E35D0539542EEC8D550E /* Pods-StompClientLibExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StompClientLibExample.release.xcconfig"; path = "Target Support Files/Pods-StompClientLibExample/Pods-StompClientLibExample.release.xcconfig"; sourceTree = "<group>"; };
 		4D7A2EDE252F0A3400C25C02 /* StompClientLib.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StompClientLib.swift; path = ../StompClientLib/Classes/StompClientLib.swift; sourceTree = "<group>"; };
 		4DDC24BA252EFF0200E14704 /* StompClientLibExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StompClientLibExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +97,7 @@
 		035CAA487E99E2980A3DBE59 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4529619225A5BBB700BCF05A /* SocketRocket.framework */,
 				A09E28D4F0D1C862DB14566E /* Pods_StompClientLibExample.framework */,
 				04998091BF2B72FE0D232EBD /* Pods_StompClientLibExample_StompClientLibExampleUITests.framework */,
 				B5F10D61FC79B5256A559E91 /* Pods_StompClientLibExampleTests.framework */,
@@ -201,7 +203,6 @@
 				4DDC24CC252EFF0400E14704 /* Sources */,
 				4DDC24CD252EFF0400E14704 /* Frameworks */,
 				4DDC24CE252EFF0400E14704 /* Resources */,
-				3137B567CD7D40AA2BE044B6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -323,23 +324,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		3137B567CD7D40AA2BE044B6 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-StompClientLibExampleTests/Pods-StompClientLibExampleTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-StompClientLibExampleTests/Pods-StompClientLibExampleTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StompClientLibExampleTests/Pods-StompClientLibExampleTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		540BB5ED1941CA4B9B331759 /* [CP] Check Pods Manifest.lock */ = {

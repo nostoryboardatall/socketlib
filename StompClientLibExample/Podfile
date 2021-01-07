@@ -7,13 +7,13 @@ target 'StompClientLibExample' do
 
   # Pods for StompClientLibExample
   pod 'StompClientLib', :path => '../'
-
+  pod 'SocketRocket', :git => 'https://git.csat.ru/a.pozakshin/socketrocket.git', :branch => 'dev'
 
 
   target 'StompClientLibExampleTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'SocketRocket'
+    # pod 'SocketRocket'
   end
 
   target 'StompClientLibExampleUITests' do
