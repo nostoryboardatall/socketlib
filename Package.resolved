@@ -5,8 +5,8 @@
         "package": "SocketRocket",
         "repositoryURL": "https://git.csat.ru/a.pozakshin/socketrocket.git",
         "state": {
-          "branch": "fork-debug",
-          "revision": "5f408dfcd1d2ce1ca56ef073b61e5d11b6688d4f",
+          "branch": "debug-enabled",
+          "revision": "a2cd167478a98ac6222b9cca3ad427587eebb9de",
           "version": null
         }
       }
