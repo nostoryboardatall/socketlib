@@ -92,21 +92,35 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
         }
     }
     
-    public func openSocketWithURLRequest(request: NSURLRequest, delegate: StompClientLibDelegate, connectionHeaders: [String: String]? = nil) {
+    public func openSocketWithURLRequest(
+        request: NSURLRequest,
+        delegate: StompClientLibDelegate,
+        connectionHeaders: [String: String]? = nil,
+        isDebugEnabled: Bool = false
+    ) {
         self.connectionHeaders = connectionHeaders
         self.delegate = delegate
         self.urlRequest = request
         // Opening the socket
-        openSocket()
+        openSocket(isDebugEnabled)
         self.connection = true
     }
     
-    private func openSocket() {
+    private func openSocket(_ isDebugEnabled: Bool = false) {
         if socket == nil || socket?.readyState == .CLOSED {
             if certificateCheckEnabled == true {
-                self.socket = SRWebSocket(urlRequest: urlRequest! as URLRequest)
+                self.socket = SRWebSocket(
+                    urlRequest: urlRequest! as URLRequest,
+                    isDebugEnabled: isDebugEnabled
+                )
             } else {
-                self.socket = SRWebSocket(urlRequest: urlRequest! as URLRequest, protocols: [], allowsUntrustedSSLCertificates: true)
+                self.socket = SRWebSocket(
+                    urlRequest: urlRequest! as URLRequest,
+                    protocols: [],
+                    securityPolicy: SRSecurityPolicy.default(),
+                    isDebugEnabled: isDebugEnabled
+                )
+//                    SRWebSocket(urlRequest: urlRequest! as URLRequest, protocols: [], allowsUntrustedSSLCertificates: true)
             }
             
             socket!.delegate = self
@@ -146,7 +160,7 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
         }
     }
     
-    public func webSocket(_ webSocket: SRWebSocket!, didReceiveMessage message: Any!) {
+    public func webSocket(_ webSocket: SRWebSocket, didReceiveMessage message: Any) {
         
         func processString(string: String) {
             var contents = string.components(separatedBy: "\n")
@@ -193,22 +207,26 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
         }
     }
     
-    public func webSocketDidOpen(_ webSocket: SRWebSocket!) {
+    public func webSocketDidOpen(_ webSocket: SRWebSocket) {
         print("WebSocket is connected")
         connect()
     }
     
-    public func webSocket(_ webSocket: SRWebSocket!, didFailWithError error: Error!) {
+    public func webSocket(_ webSocket: SRWebSocket, didFailWithError error: Error) {
         print("didFailWithError: \(String(describing: error))")
         
         if let delegate = delegate {
             DispatchQueue.main.async(execute: {
-                delegate.serverDidSendError(client: self, withErrorMessage: error.localizedDescription, detailedErrorMessage: error as? String)
+                delegate.serverDidSendError(
+                    client: self,
+                    withErrorMessage: error.localizedDescription,
+                    detailedErrorMessage: error.localizedDescription
+                )
             })
         }
     }
     
-    public func webSocket(_ webSocket: SRWebSocket!, didCloseWithCode code: Int, reason: String!, wasClean: Bool) {
+    public func webSocket(_ webSocket: SRWebSocket, didCloseWithCode code: Int, reason: String?, wasClean: Bool) {
         print("didCloseWithCode \(code), reason: \(String(describing: reason))")
         if let delegate = delegate {
             DispatchQueue.main.async(execute: {
@@ -217,7 +235,7 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
         }
     }
     
-    public func webSocket(_ webSocket: SRWebSocket!, didReceivePong pongPayload: Data!) {
+    public func webSocket(_ webSocket: SRWebSocket, didReceivePong pongPayload: Data?) {
         print("didReceivePong")
     }
     
@@ -251,7 +269,17 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
             frameString += StompCommands.controlChar
             
             if socket?.readyState == .OPEN {
-                socket?.send(frameString)
+                do {
+                    try socket?.send(string: frameString)
+                } catch {
+                    delegate?.serverDidSendError(
+                        client: self,
+                        withErrorMessage: error.localizedDescription,
+                        detailedErrorMessage: error.localizedDescription
+                    )
+                }
+// DEPRECATED
+//                socket?.send(frameString)
             } else {
                 if let delegate = delegate {
                     DispatchQueue.main.async(execute: {
@@ -316,7 +344,17 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
             }
         } else if command.count == 0 {
             // Pong from the server
-            socket?.send(StompCommands.commandPing)
+            do {
+                try socket?.send(string: StompCommands.commandPing)
+            } catch {
+                delegate?.serverDidSendError(
+                    client: self,
+                    withErrorMessage: error.localizedDescription,
+                    detailedErrorMessage: error.localizedDescription
+                )
+            }
+// DEPRECATED
+//            socket?.send(StompCommands.commandPing)
             if let delegate = delegate {
                 DispatchQueue.main.async(execute: {
                     delegate.serverDidSendPing()
@@ -454,11 +492,22 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
     
     // Reconnect after one sec or arg, if reconnect is available
     // TODO: MAKE A VARIABLE TO CHECK RECONNECT OPTION IS AVAILABLE OR NOT
-    public func reconnect(request: NSURLRequest, delegate: StompClientLibDelegate, connectionHeaders: [String: String] = [String: String](), time: Double = 1.0, exponentialBackoff: Bool = true){
+    public func reconnect(
+        request: NSURLRequest,
+        delegate: StompClientLibDelegate,
+        connectionHeaders: [String: String] = [String: String](),
+        time: Double = 1.0,
+        exponentialBackoff: Bool = true,
+        isDebugEnabled: Bool = false
+    ){
         if #available(iOS 10.0, *) {
             Timer.scheduledTimer(withTimeInterval: time, repeats: true, block: { _ in
-                self.reconnectLogic(request: request, delegate: delegate
-                    , connectionHeaders: connectionHeaders)
+                self.reconnectLogic(
+                    request: request,
+                    delegate: delegate,
+                    connectionHeaders: connectionHeaders,
+                    isDebugEnabled: isDebugEnabled
+                )
             })
         } else {
             // Fallback on earlier versions
@@ -471,10 +520,29 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
     //        reconnectLogic(request: request, delegate: delegate, connectionHeaders: connectionHeaders)
     //    }
     
-    private func reconnectLogic(request: NSURLRequest, delegate: StompClientLibDelegate, connectionHeaders: [String: String] = [String: String]()){
+    private func reconnectLogic(
+        request: NSURLRequest,
+        delegate: StompClientLibDelegate,
+        connectionHeaders: [String: String] = [String: String](),
+        isDebugEnabled: Bool = false
+    ) {
         // Check if connection is alive or dead
-        if (!self.isConnected()){
-            self.checkConnectionHeader(connectionHeaders: connectionHeaders) ? self.openSocketWithURLRequest(request: request, delegate: delegate, connectionHeaders: connectionHeaders) : self.openSocketWithURLRequest(request: request, delegate: delegate)
+        if (!self.isConnected()) {
+            if self.checkConnectionHeader(connectionHeaders: connectionHeaders) {
+                self.openSocketWithURLRequest(
+                    request: request,
+                    delegate: delegate,
+                    connectionHeaders: connectionHeaders,
+                    isDebugEnabled: isDebugEnabled
+                )
+            } else {
+                self.openSocketWithURLRequest(
+                    request: request,
+                    delegate: delegate,
+                    connectionHeaders: nil,
+                    isDebugEnabled: isDebugEnabled
+                )
+            }
         }
     }
     
