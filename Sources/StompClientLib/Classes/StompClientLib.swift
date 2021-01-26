@@ -85,6 +85,7 @@ public protocol StompClientLibDelegate: class {
     func serverDidSendError(client: StompClientLib!,
                             withErrorMessage description: String,
                             detailedErrorMessage message: String?)
+    func didRecievePong(client: StompClientLib!, with data: Data?)
     func serverDidSendPing()
 }
 
@@ -250,7 +251,10 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
     }
     
     public func webSocket(_ webSocket: SRWebSocket, didReceivePong pongPayload: Data?) {
-        // TODO: - Delegate Method?
+        guard let delegate = delegate else { return }
+        DispatchQueue.main.async(execute: {
+            delegate.didRecievePong(client: self, with: pongPayload)
+        })
     }
     
     private func sendFrame(command: String?, header: [String: String]?, body: AnyObject?) {
