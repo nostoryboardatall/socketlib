@@ -561,7 +561,7 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
         return !connectionHeaders.isEmpty
     }
     
-    private func pingServer() {
+    public func pingServer() {
         do {
             try socket?.send(string: StompCommands.commandPing)
             delegate?.didPingServer(client: self, at: Date())
