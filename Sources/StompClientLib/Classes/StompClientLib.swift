@@ -87,6 +87,7 @@ public protocol StompClientLibDelegate: class {
                             detailedErrorMessage message: String?)
     func didRecievePong(client: StompClientLib!, with data: Data?)
     func serverDidSendPing()
+    func didPingServer(client: StompClientLib!, at date: Date)
 }
 
 @objcMembers
@@ -347,6 +348,7 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
             }
         } else if command == StompCommands.responseFrameMessage {   // Message comes to this part
             // Response
+            pingServer()
             if let delegate = delegate {
                 DispatchQueue.main.async(execute: {
                     delegate.stompClient(client: self, didReceiveMessageWithJSONBody: self.dictForJSONString(jsonStr: body), akaStringBody: body, withHeader: headers, withDestination: self.destinationFromHeader(header: headers))
@@ -363,15 +365,7 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
             }
         } else if command.count == 0 {
             // Pong from the server
-            do {
-                try socket?.send(string: StompCommands.commandPing)
-            } catch {
-                delegate?.serverDidSendError(
-                    client: self,
-                    withErrorMessage: error.localizedDescription,
-                    detailedErrorMessage: "Error sending pong"
-                )
-            }
+            pingServer()
             if let delegate = delegate {
                 DispatchQueue.main.async(execute: {
                     delegate.serverDidSendPing()
@@ -565,6 +559,19 @@ public class StompClientLib: NSObject, SRWebSocketDelegate {
     
     private func checkConnectionHeader(connectionHeaders: [String: String] = [String: String]()) -> Bool {
         return !connectionHeaders.isEmpty
+    }
+    
+    private func pingServer() {
+        do {
+            try socket?.send(string: StompCommands.commandPing)
+            delegate?.didPingServer(client: self, at: Date())
+        } catch {
+            delegate?.serverDidSendError(
+                client: self,
+                withErrorMessage: error.localizedDescription,
+                detailedErrorMessage: "Error sending pong"
+            )
+        }
     }
     
     // Autodisconnect with a given time
